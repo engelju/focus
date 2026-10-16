@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dictionary SYSTEM "file://localhost/System/Library/DTDs/sdef.dtd">
+<dictionary title="Focus API">
+    <suite name="Focus Suite" code="Focs" description="Suite for Focus commands.">
+
+        <command name="start" code="FocsStrt" description="Start or resume the current session.">
+            <cocoa class="Focus.StartScriptCommand"/>
+            <result type="text" description="The name of the started session."/>
+        </command>
+
+        <command name="stop" code="FocsStop" description="Stops the current session.">
+            <cocoa class="Focus.StopScriptCommand"/>
+            <result type="text" description="The name of the stopped session."/>
+        </command>
+
+        <command name="skip" code="FocsSkip" description="Skips the current session.">
+            <cocoa class="Focus.SkipScriptCommand"/>
+            <result type="text" description="The name of the next pending session."/>
+        </command>
+
+        <command name="previous" code="FocsPrev" description="Reloads the current or previous session.">
+            <cocoa class="Focus.PreviousScriptCommand"/>
+            <result type="text" description="The name of the pending session."/>
+        </command>
+
+        <command name="reset" code="FocsRset" description="Resets the cycle progress.">
+            <cocoa class="Focus.ResetScriptCommand"/>
+            <result type="text" description="The name of the pending session."/>
+        </command>
+
+        <command name="show" code="FocsShow" description="Shows the Focus window.">
+            <cocoa class="Focus.ShowScriptCommand"/>
+            <result type="text" description="The name of the current session."/>
+        </command>
+
+        <command name="hide" code="FocsHide" description="Hides the Focus window.">
+            <cocoa class="Focus.HideScriptCommand"/>
+            <result type="text" description="The name of the current session."/>
+        </command>
+
+        <command name="getPhase" code="FocsPhas" description="Gets the current phase.">
+            <cocoa class="Focus.GetCurrentPhaseScriptCommand"/>
+            <result type="text" description="focus, shortBreak or longBreak."/>
+        </command>
+
+        <command name="getTime" code="FocsTime" description="Gets the remaining time.">
+            <cocoa class="Focus.GetRemainingTimeScriptCommand"/>
+            <result type="text" description="The remaining time of the current session."/>
+        </command>
+
+        <command name="setTitle" code="FocsSeTi" description="Sets the session title.">
+            <cocoa class="Focus.SetSessionTitleScriptCommand"/>
+            <parameter name="to" code="TiPa" description="Session title" type="text">
+                <cocoa key="titleParameter"/>
+            </parameter>
+            <result type="text" description="The title of the current session."/>
+        </command>
+
+        <command name="getTitle" code="FocsGeTi" description="Gets the current session title.">
+            <cocoa class="Focus.GetSessionTitleScriptCommand"/>
+            <result type="text" description="The title of the current session."/>
+        </command>
+
+    </suite>
+</dictionary>

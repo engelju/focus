@@ -1,0 +1,4 @@
+.build/
+dist/
+Bundle/AppIcon.icns
+.DS_Store
