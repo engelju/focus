@@ -103,3 +103,7 @@ Scripts/make-icon.swift   renders the app icon
 Settings are stored in `UserDefaults` under `local.focus.Focus`
 (`flow.durationInMinutes`, `enableCommitmentMode`, `menuBarIconStyle`, …);
 inspect them with `defaults read local.focus.Focus`.
+
+## License
+
+[MIT](LICENSE)
