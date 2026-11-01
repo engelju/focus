@@ -1,7 +1,13 @@
 import SwiftUI
 
-/// The 380 × 268 timer window.
+/// The timer window: 220 × 268 at minimum, the ring grows when it is resized.
 struct MainWindowView: View {
+    static let minSize = CGSize(width: 220, height: 268)
+    /// Size the window opens at the first time.
+    static let defaultSize = CGSize(width: 380, height: 268)
+    /// Ring diameter at the minimum window size.
+    private static let baseRing: CGFloat = 128
+
     @State private var timer = FocusTimer.shared
     @State private var settings = AppSettings.shared
     @State private var titleDraft: String = AppSettings.shared.sessionTitle
@@ -10,17 +16,20 @@ struct MainWindowView: View {
     private var tint: Color { timer.phase.tint }
 
     var body: some View {
-        VStack(spacing: 0) {
-            header
-            Spacer(minLength: 6)
-            ring
-            Spacer(minLength: 6)
-            titleField
-            Spacer(minLength: 10)
-            controls
+        GeometryReader { proxy in
+            VStack(spacing: 0) {
+                header
+                Spacer(minLength: 6)
+                ring(diameter: ringDiameter(for: proxy.size))
+                Spacer(minLength: 6)
+                titleField
+                Spacer(minLength: 10)
+                controls
+            }
+            .padding(16)
         }
-        .padding(16)
-        .frame(width: 380, height: 268)
+        .frame(minWidth: Self.minSize.width, maxWidth: .infinity,
+               minHeight: Self.minSize.height, maxHeight: .infinity)
         .background(.background)
         .onChange(of: settings.sessionTitle) { _, new in
             if !titleFocused { titleDraft = new }
@@ -35,10 +44,12 @@ struct MainWindowView: View {
                 .font(.system(size: 11, weight: .semibold))
             Text(timer.phase.title)
                 .font(.system(size: 12, weight: .semibold))
+                .lineLimit(1)
             if timer.state == .paused {
                 Text("· Paused")
                     .font(.system(size: 12))
                     .foregroundStyle(.secondary)
+                    .lineLimit(1)
             }
             Spacer()
             Text(timer.cyclePosition)
@@ -52,12 +63,22 @@ struct MainWindowView: View {
 
     // MARK: - Ring
 
-    private var ring: some View {
-        ZStack {
-            RingView(progress: timer.progress, tint: tint, paused: timer.state == .paused)
-            VStack(spacing: 6) {
+    /// Extra height goes to the ring; it is capped by the window width.
+    private func ringDiameter(for size: CGSize) -> CGFloat {
+        let byHeight = Self.baseRing + size.height - Self.minSize.height
+        let byWidth = size.width - 32
+        return max(Self.baseRing, min(byHeight, byWidth))
+    }
+
+    private func ring(diameter: CGFloat) -> some View {
+        let scale = diameter / Self.baseRing
+        return ZStack {
+            // The stroke grows slower than the ring so a big ring doesn't look heavy.
+            RingView(progress: timer.progress, tint: tint, lineWidth: 9 * scale.squareRoot(),
+                     paused: timer.state == .paused)
+            VStack(spacing: 6 * scale) {
                 Text(timer.clock)
-                    .font(.system(size: 36, weight: .medium, design: .rounded))
+                    .font(.system(size: 36 * scale, weight: .medium, design: .rounded))
                     .monospacedDigit()
                     .contentTransition(.numericText(countsDown: true))
                 CycleDots(completed: timer.completedFlowsInCycle,
@@ -65,7 +86,7 @@ struct MainWindowView: View {
                           tint: tint)
             }
         }
-        .frame(width: 128, height: 128)
+        .frame(width: diameter, height: diameter)
     }
 
     // MARK: - Session title
@@ -115,10 +136,12 @@ struct MainWindowView: View {
             Button(action: { timer.toggle() }) {
                 Text(timer.isRunning ? "Stop" : (timer.remainingSeconds < timer.plannedSeconds ? "Resume" : "Start"))
                     .font(.system(size: 13, weight: .semibold))
-                    .frame(width: 128, height: 30)
+                    .frame(minWidth: 96, maxWidth: 128, minHeight: 30, maxHeight: 30)
+                    .background(tint.opacity(timer.isLocked && timer.isRunning ? 0.45 : 1), in: Capsule())
+                    // A plain button only hit-tests what it draws; make the whole capsule clickable.
+                    .contentShape(Capsule())
             }
             .buttonStyle(.plain)
-            .background(tint.opacity(timer.isLocked && timer.isRunning ? 0.45 : 1), in: Capsule())
             .foregroundStyle(.white)
             .disabled(timer.isLocked)
             .help(timer.isLocked ? "Commitment mode is on — stay with it." : "Start or stop the timer")

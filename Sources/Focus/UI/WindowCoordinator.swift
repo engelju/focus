@@ -1,12 +1,25 @@
 import AppKit
 import SwiftUI
 
-/// Window that closes on ⎋ — used for the fullscreen break screen.
+/// Window that closes on ⎋, ⌘M and ⌘W — used for the fullscreen break screen.
 final class EscapableWindow: NSWindow {
     var onCancel: (() -> Void)?
 
+    // Borderless windows refuse key status by default, which swallows ⎋.
+    override var canBecomeKey: Bool { true }
+    override var canBecomeMain: Bool { true }
+
     override func cancelOperation(_ sender: Any?) {
         onCancel?()
+    }
+
+    override func performKeyEquivalent(with event: NSEvent) -> Bool {
+        let mods = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
+        if mods == .command, ["m", "w"].contains(event.charactersIgnoringModifiers) {
+            onCancel?()
+            return true
+        }
+        return super.performKeyEquivalent(with: event)
     }
 }
 
@@ -60,12 +73,13 @@ final class WindowCoordinator: NSObject, NSWindowDelegate {
         if let main { return main }
         let controller = NSHostingController(rootView: MainWindowView())
         let window = NSWindow(contentViewController: controller)
-        window.styleMask = [.titled, .closable, .fullSizeContentView]
+        window.styleMask = [.titled, .closable, .resizable, .fullSizeContentView]
         window.titleVisibility = .hidden
         window.titlebarAppearsTransparent = true
         window.isMovableByWindowBackground = true
         window.title = "Focus"
-        window.setContentSize(NSSize(width: 380, height: 268))
+        window.setContentSize(MainWindowView.defaultSize)
+        window.contentMinSize = MainWindowView.minSize
         window.standardWindowButton(.miniaturizeButton)?.isHidden = true
         window.standardWindowButton(.zoomButton)?.isHidden = true
         window.isReleasedWhenClosed = false
@@ -157,7 +171,7 @@ final class WindowCoordinator: NSObject, NSWindowDelegate {
             window.backgroundColor = .windowBackgroundColor
             window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
             window.isReleasedWhenClosed = false
-            window.onCancel = { [weak self] in self?.hideBreakWindow() }
+            window.onCancel = { [weak self] in self?.minimizeBreakWindow() }
             breakWindow = window
         }
         if let screen = NSScreen.main {
@@ -169,6 +183,13 @@ final class WindowCoordinator: NSObject, NSWindowDelegate {
 
     func hideBreakWindow() {
         breakWindow?.orderOut(nil)
+    }
+
+    /// Gets the break screen out of the way but keeps the countdown visible
+    /// in the small timer window.
+    func minimizeBreakWindow() {
+        hideBreakWindow()
+        showMainWindow()
     }
 
     /// `setFrameAutosaveName` succeeds even when nothing was stored, so check

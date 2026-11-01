@@ -32,8 +32,10 @@ straight from Spotlight.
 - Left click opens/closes the window, right click opens the menu
 
 **Windows**
-- Main window 380 × 268 with progress ring, cycle dots and title field
-- Fullscreen break screen with a quote (⎋ closes it)
+- Resizable timer window (minimum 220 × 268) with progress ring, cycle dots and
+  title field; the ring grows with the window
+- Fullscreen break screen with a quote; ⎋, ⌘M or *Minimize* hide it while the
+  break keeps running
 - Settings, Statistics, "How It Works", Welcome, About
 
 **Statistics**

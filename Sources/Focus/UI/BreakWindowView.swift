@@ -50,9 +50,12 @@ struct BreakWindowView: View {
                         WindowCoordinator.shared.hideBreakWindow()
                     }
                     .controlSize(.large)
+                    Button("Minimize") { WindowCoordinator.shared.minimizeBreakWindow() }
+                        .controlSize(.large)
+                        .help("Hide this screen; the break keeps running")
                 }
 
-                Text("Press ⎋ to close this screen")
+                Text("Press ⎋ or ⌘M to minimize this screen")
                     .font(.caption)
                     .foregroundStyle(.tertiary)
             }

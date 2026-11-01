@@ -28,8 +28,8 @@ let platePath = NSBezierPath(roundedRect: plate,
                              xRadius: plate.width * 0.235,
                              yRadius: plate.width * 0.235)
 let gradient = NSGradient(colors: [
-    NSColor(srgbRed: 0.98, green: 0.55, blue: 0.25, alpha: 1),
-    NSColor(srgbRed: 0.92, green: 0.30, blue: 0.22, alpha: 1),
+    NSColor(srgbRed: 0.50, green: 0.56, blue: 0.96, alpha: 1),
+    NSColor(srgbRed: 0.30, green: 0.32, blue: 0.82, alpha: 1),
 ])
 gradient?.draw(in: platePath, angle: -60)
 

@@ -50,14 +50,14 @@ enum RunState: String, Codable {
 }
 
 extension Color {
-    /// Warm amber used while focusing.
-    static let focusAccent = Color(red: 0.95, green: 0.40, blue: 0.22)
+    /// Calm indigo used while focusing.
+    static let focusAccent = Color(red: 0.36, green: 0.40, blue: 0.88)
     /// Calm teal used during breaks.
     static let breakAccent = Color(red: 0.18, green: 0.72, blue: 0.63)
 }
 
 extension NSColor {
-    static let focusAccentNS = NSColor(red: 0.95, green: 0.40, blue: 0.22, alpha: 1)
+    static let focusAccentNS = NSColor(red: 0.36, green: 0.40, blue: 0.88, alpha: 1)
     static let breakAccentNS = NSColor(red: 0.18, green: 0.72, blue: 0.63, alpha: 1)
 }
 

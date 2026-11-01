@@ -10,7 +10,12 @@ enum Snapshot {
         let base = URL(fileURLWithPath: dir)
         try? FileManager.default.createDirectory(at: base, withIntermediateDirectories: true)
 
-        render(MainWindowView(), to: base.appendingPathComponent("main.png"))
+        render(MainWindowView().frame(width: 380, height: 268),
+               to: base.appendingPathComponent("main.png"))
+        render(MainWindowView().frame(width: 220, height: 268),
+               to: base.appendingPathComponent("main-narrow.png"))
+        render(MainWindowView().frame(width: 520, height: 480),
+               to: base.appendingPathComponent("main-large.png"))
         render(SettingsView(), to: base.appendingPathComponent("settings.png"))
         render(StatisticsView().frame(width: 760, height: 620),
                to: base.appendingPathComponent("statistics.png"))
