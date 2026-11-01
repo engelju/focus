@@ -3,6 +3,8 @@
 A Pomodoro timer that lives in the macOS menu bar, with no Dock icon. Native
 SwiftUI/AppKit app, built with SwiftPM — no external dependencies.
 
+![The Focus timer window](docs/screenshot.png)
+
 ```bash
 make            # build, assemble the bundle, install to /Applications
 make run        # same, then (re)launch
