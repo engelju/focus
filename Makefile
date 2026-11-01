@@ -1,22 +1,16 @@
-APP := dist/Focus.app
+APP := /Applications/Focus.app
 
-.PHONY: all build run install stop clean icon test
+.PHONY: all build run stop clean icon test
 
 all: build
 
-## Build Focus.app into dist/
+## Build Focus.app and install it to /Applications
 build:
 	@Scripts/build-app.sh
 
-## Build and launch (replaces a running instance)
+## Build, install and launch (replaces a running instance)
 run: stop build
 	@open $(APP)
-
-## Copy the app to /Applications
-install: build
-	@rm -rf /Applications/Focus.app
-	@cp -R $(APP) /Applications/Focus.app
-	@echo "installed /Applications/Focus.app"
 
 ## Quit a running instance
 stop:

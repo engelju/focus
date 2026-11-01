@@ -1,5 +1,6 @@
 #!/bin/bash
-# Builds Focus.app into dist/ and ad-hoc signs it.
+# Builds Focus.app into dist/, ad-hoc signs it, and installs it to
+# /Applications (so Spotlight and Launchpad find it).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -42,4 +43,22 @@ echo "==> ad-hoc signing"
 codesign --force --sign - --timestamp=none "$APP" >/dev/null 2>&1 \
     || codesign --force --sign - "$APP"
 
-echo "==> done: $APP"
+# --- install -----------------------------------------------------------------
+# Moved rather than copied, so Spotlight doesn't index two Focus apps. Only
+# replaces an existing app if it's ours.
+INSTALLED=/Applications/Focus.app
+BUNDLE_ID=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$ROOT/Bundle/Info.plist")
+if [ -e "$INSTALLED" ]; then
+    EXISTING_ID=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$INSTALLED/Contents/Info.plist" 2>/dev/null || true)
+    if [ "$EXISTING_ID" != "$BUNDLE_ID" ]; then
+        echo "$INSTALLED exists but isn't Focus ($EXISTING_ID); leaving it alone. Built $APP" >&2
+        exit 1
+    fi
+    rm -rf "$INSTALLED"
+fi
+mv "$APP" "$INSTALLED"
+
+echo "==> installed $INSTALLED"
+if pgrep -xq Focus; then
+    echo "Focus is running — quit and relaunch it (or use 'make run') to use the new build."
+fi

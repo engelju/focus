@@ -4,10 +4,13 @@ A Pomodoro timer that lives in the macOS menu bar, with no Dock icon. Native
 SwiftUI/AppKit app, built with SwiftPM — no external dependencies.
 
 ```bash
-make run        # build, assemble the bundle, launch
-make install    # copy to /Applications
+make            # build, assemble the bundle, install to /Applications
+make run        # same, then (re)launch
 make stop       # quit a running instance
 ```
+
+Every build replaces `/Applications/Focus.app`, so the app can be launched
+straight from Spotlight.
 
 ## Features
 
@@ -91,7 +94,7 @@ Sources/Focus/
   Services/               FocusTimer, Sound, Notifications, HotKeys, AppBlocker
   UI/                     Windows, menu bar, ring, settings, statistics
 Bundle/                   Info.plist, Focus.sdef, generated AppIcon.icns
-Scripts/build-app.sh      builds dist/Focus.app and ad-hoc signs it
+Scripts/build-app.sh      builds Focus.app, ad-hoc signs it, moves it to /Applications
 Scripts/make-icon.swift   renders the app icon
 ```
 
